@@ -95,6 +95,18 @@ loadTimesheets = function (exports) {
     }
   };
 
+  // 有給休暇
+  Timesheets.prototype.actionPaidHoliday = function(username, message) {
+    if(this.date) {
+      var dateObj = new Date(this.date[0], this.date[1]-1, this.date[2]);
+      var data = this.storage.get(username, dateObj);
+      if(!data.signOut || data.signOut === '-') {
+        this.storage.set(username, dateObj, {signIn: '-', signOut: '-', note: message});
+        this.responder.template("有給休暇", username, DateUtils.format("Y/m/d", dateObj));
+      }
+    }
+  };
+
   // 休暇取消
   Timesheets.prototype.actionCancelOff = function(username, message) {
     if(this.date) {
